@@ -164,36 +164,36 @@ cython_debug/
 
 # dependencies
 /node_modules
-/.pnp
-.pnp.js
-.yarn/install-state.gz
+/Application/client-side/.pnp
+/Application/client-side.pnp.js
+/Application/client-side.yarn/install-state.gz
 
 # testing
-/coverage
+/Application/client-side/coverage
 
 # next.js
-/.next/
-/out/
+/Application/client-side/.next/
+/Application/client-side/out/
 
 # production
-/build
+/Application/client-side/build
 /Application/client-side/node_modules
 
 # misc
-.DS_Store
-*.pem
+/Application/client-side/.DS_Store
+/Application/client-side/*.pem
 
 # debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+/Application/client-side/npm-debug.log*
+/Application/client-side/yarn-debug.log*
+/Application/client-side/yarn-error.log*
 
 # local env files
-.env*.local
+/Application/client-side/*.env*.local
 
 # vercel
-.vercel
+/Application/client-side/*.vercel
 
 # typescript
-*.tsbuildinfo
+/Application/client-side/*.tsbuildinfo
 next-env.d.ts
