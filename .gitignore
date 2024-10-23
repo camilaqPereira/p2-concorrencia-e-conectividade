@@ -164,9 +164,10 @@ cython_debug/
 
 # dependencies
 /node_modules
-/Application/client-side/.pnp
-/Application/client-side.pnp.js
-/Application/client-side.yarn/install-state.gz
+/Application/client-side/fonts
+/Application/client-side/*.pnp
+/Application/client-side/*.pnp.js
+/Application/client-side/*.yarn/install-state.gz
 
 # testing
 /Application/client-side/coverage
