@@ -3,7 +3,7 @@ import socket
 ##@brief: Classe usada pra gerenciar o socket do cliente e realizar conexão com o servidor
 class ClientSocket:
 
-    def __init__(self, ip=''):
+    def __init__(self, ip):
         self.addr = None
         self.ip = ip
         self.port = 9000
