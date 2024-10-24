@@ -4,7 +4,6 @@ import json
 import datetime
 from DB.utils import *
 
-
 ##
 #   @brief: Classe usada para o gerenciamento de constantes do protocolo
 ##
@@ -35,6 +34,11 @@ class ConstantsManagement(Enum):
     MAX_PKT_SIZE = 64 #tamanho fixo do primeiro pacote em bytes
     DEFAULT_PORT = 8000
     HOST = socket.gethostbyname(socket.gethostname())
+
+    #Servers ids
+    SERVER_A = "Server-A"
+    SERVER_B = "Server-B"
+    SERVER_C = "Server-C"
 
 ##@brief: classe responsavel por reunir as informações de requisições alem de dispor de metodos para tradução em json ou tradução de um json
 class Request:
