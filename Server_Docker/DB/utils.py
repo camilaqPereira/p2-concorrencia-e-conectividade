@@ -11,8 +11,6 @@ from threading import Lock
 ##
 class FilePathsManagement(Enum):
     PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    NODES_FILE_PATH = PARENT_DIR+'\\DB\\matches_and_destinations.txt'
-    ROUTES_DATA_FILE_PATH = PARENT_DIR+'\\DB\\routes_data.json'
     USERS_FILE_PATH = PARENT_DIR+'\\DB\\users.json'
     TICKETS_FILE_PATH = PARENT_DIR+'\\DB\\tickets.json'
     GRAPH_FILE_PATH = PARENT_DIR+'\\DB\\graph.json'
