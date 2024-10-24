@@ -18,7 +18,6 @@ class Server:
         return cls._instance
 
     def __init__(self): #criação do socket
-        self.id = ConstantsManagement.SERVER_A
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #Encerra o socket caso o programa seja encerrado
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
