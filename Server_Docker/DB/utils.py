@@ -24,6 +24,7 @@ class ServerData:
     graph_lock = Lock() #mutex para o acesso ao grafo
 
     def __init__(self):
+        self.path_locks:dict = {}
         self.graph:nx.DiGraph = self.__init_graph()
         self.destinations:list[str] = list(self.graph)
         self.__init_database()
@@ -61,7 +62,7 @@ class ServerData:
             new_graph = nx.DiGraph()
             for node, edges in adjacency_dict.items():
                 for neighbor, attrs in edges.items():
-                    attrs["lock"] = Lock()
+                    self.path_locks[(node, neighbor)] = Lock()
                     new_graph.add_edge(node, neighbor, **attrs)
 
         except FileNotFoundError:
@@ -82,7 +83,7 @@ class ServerData:
 ## 
     def __set_graph_edge_weight(self, origin:str, destination:str, new_weight:int):
             if self.graph.has_edge(origin, destination):
-                with self.graph[origin][destination]["lock"]:
+                with self.path_locks[(origin, destination)]:
                     self.graph[origin][destination]["weight"] = new_weight
                 #TODO: notify other servers
                 return True
@@ -176,4 +177,3 @@ class UsersData:
             print(f'[SERVER] User email already exists.')
             return False
         
-
