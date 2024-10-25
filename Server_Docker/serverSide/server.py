@@ -3,7 +3,13 @@ from serverSide.ServerClass import *
 from server.requests import ConstantsManagement as cm
 from DB.utils import ServerData
 from concurrent.futures import ThreadPoolExecutor
+from flask import Flask, request, jsonify
+import requests
+from flask_cors import  CORS
 
+
+#Lista dos ips dos servidores
+serveriplist = []
 
 ##
 #   @brief Função worker excecutada pelas threads da poolthread. Realiza o processamento da requisição do usuário
@@ -94,7 +100,7 @@ def process_client(client:ClientHandler, server_data: ServerData):
     
     return
 
-def main(server_port):
+def main_socket(server_port):
     #Inicialização dos dados do servidor
     server_data = ServerData()
     #Inicialização do socket
@@ -115,6 +121,27 @@ def main(server_port):
                 print(f"[SERVER] Error accepting new connection. Error: {er} Retrying...\n")
             except KeyboardInterrupt:
                 exit(-1)
+
+
+app = Flask(__name__)
+
+CORS(app)
+
+@app.route('/')
+def home():
+    return "Server is running", 200
+
+@app.route('newserver')
+def new_server():
+    params = request.get_json()
+    serveriplist.append({params['name']:params['ip']})
+
+    return {'msg':'success'}, 200
+
+@app.route('getgraph')
+def get_graph():
+    return jsonify('''lista de adjacencias passa aqui'''), 200
+
 
 
 # Select port #
