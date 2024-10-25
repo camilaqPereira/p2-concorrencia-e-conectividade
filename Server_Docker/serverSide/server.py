@@ -131,20 +131,26 @@ CORS(app)
 def home():
     return "Server is running", 200
 
-@app.route('newserver')
+@app.route('/newserver')
 def new_server():
     params = request.get_json()
     serveriplist.append({params['name']:params['ip']})
 
     return {'msg':'success'}, 200
 
-@app.route('getgraph')
+@app.route('/getgraph')
 def get_graph():
     return jsonify('''lista de adjacencias passa aqui'''), 200
 
+#inicializa a api
+def main_api():
+    app.run(host='0.0.0.0', debug=True, port=5000)
 
+
+ 
 
 # Select port #
 port = int(input("Insert port value (0 for default): "))
 port = port or ConstantsManagement.DEFAULT_PORT.value
-main(port)
+
+main_socket(port)
