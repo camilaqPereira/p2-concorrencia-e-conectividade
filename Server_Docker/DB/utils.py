@@ -1,9 +1,9 @@
 from enum import Enum
 from json import load, dump
 import os
-import numpy as np
 import networkx as nx
 from threading import Lock
+
 
 ## 
 #   @brief: Classe utilizada para o gerenciamento dos arquivos utilizados no armazenamento de dados do servidor
@@ -23,9 +23,9 @@ class ServerData:
 
     graph_lock = Lock() #mutex para o acesso ao grafo
 
-    def __init__(self):
+    def __init__(self, server_id):
         self.path_locks:dict = {}
-        self.graph:nx.DiGraph = self.__init_graph()
+        self.graph:nx.DiGraph = self.__init_graph(server_id)
         self.destinations:list[str] = list(self.graph)
         self.__init_database()
 
@@ -54,7 +54,7 @@ class ServerData:
 #   @return new_grah - DiGraph carregado do arquivo de grafos do servidor.
 #   Caso contrário, retorna um DiGraph vazio
 ##
-    def __init_graph(self):
+    def __init_graph(self, server_id):
         try:
             with open(FilePathsManagement.GRAPH_FILE_PATH.value, 'r') as file:
                 adjacency_dict:dict = load(file)
@@ -63,15 +63,40 @@ class ServerData:
             for node, edges in adjacency_dict.items():
                 for neighbor, attrs in edges.items():
                     self.path_locks[(node, neighbor)] = Lock()
+                    attrs["company"] = {server_id: attrs['globalWeight']}
                     new_graph.add_edge(node, neighbor, **attrs)
 
         except FileNotFoundError:
             new_graph =  nx.DiGraph()
         finally:
-            #TODO: solicitar grafos dos nós vizinhos e dar o merge
-            pass
-        return new_graph
+            return new_graph
             
+    def merge_graph(self, peers_adjacency:dict, peer_id:str):
+        with ServerData.graph_lock:
+            for edge, weight in peers_adjacency.items():
+                edge = eval(edge) #convertendo str->tuple
+
+                if self.graph.has_edge(edge[0], edge[1]): 
+
+                    with self.path_locks[edge]: #bloqueando mutex do trecho
+                        self.graph[edge[0]][edge[1]]["company"].update([(peer_id, weight)])
+                
+                else:
+                    self.graph.add_edge(edge[0],edge[1], globalWeight= weight, company={peer_id: weight})
+                
+                self.__update_global_edge_weight(edge)
+
+
+
+    def __update_global_edge_weight(self, edge:tuple):
+        #Atualizando peso global 
+        weight_values = set(self.graph[edge[0]][edge[1]]["company"].values())
+
+        if weight_values.pop() == 999 and len(weight_values) == 0:
+            self.graph[edge[0]][edge[1]]["globalWeight"] = 999
+        else:
+            self.graph[edge[0]][edge[1]]["globalWeight"] = 1
+                
 
 
 ##
@@ -81,15 +106,17 @@ class ServerData:
 #   @param: new_weiht - novo valor da aresta
 #   @return True o peso da aresta foi atualizado. Caso contrário, retorna falso
 ## 
-    def __set_graph_edge_weight(self, origin:str, destination:str, new_weight:int):
-            if self.graph.has_edge(origin, destination):
-                with self.path_locks[(origin, destination)]:
-                    self.graph[origin][destination]["weight"] = new_weight
-                #TODO: notify other servers
-                return True
-            else:
-                print(f"[SERVER] Could not update edge weight({origin}, {destination})")
-                return False
+    def set_graph_edge_weight(self, origin:str, destination:str, new_weight:int, server_id:str):
+        if self.graph.has_edge(origin, destination):
+            
+            with self.path_locks[(origin, destination)]:
+                self.graph[origin][destination]["company"].update([(server_id, new_weight)]) #atualizando peso individual do servidor
+                self.__update_global_edge_weight((origin, destination))
+                
+            return True
+        else:
+            print(f"[SERVER] Could not find and update edge weight({origin}, {destination})")
+            return False
             
         
 
@@ -101,8 +128,14 @@ class ServerData:
 #   @param routes: lista de tuplas contendo todos os trechos que devem ser decrementados
 #   @return: True se a operação for bem sucedida. Caso contrário, False
 ## 
-    def dec_all_routes(self, routes:list[tuple[str,str]]):
+    def dec_all_routes(self, routes:list[tuple[str,str, str]]):
         raise NotImplementedError()
+        
+            
+
+                
+    
+        
 
 ##
 #   @brief: Método busca os três menores caminhos disponíveis entre a origem e o destino.
@@ -118,8 +151,8 @@ class ServerData:
             if match == destination:
                 raise ValueError()
             
-            shortest_paths:list = list(nx.shortest_simple_paths(self.graph, source=match, target=destination,weight="weight"))
-            return shortest_paths[:3]
+            shortest_paths:list = list(nx.shortest_simple_paths(self.graph, source=match, target=destination,weight="globalWeight"))
+            return shortest_paths[:3] #bug deve retornar as informções do voo
         except (nx.NetworkXNoPath, nx.NetworkXError, ValueError) as err:
             return None
         
@@ -177,3 +210,4 @@ class UsersData:
             print(f'[SERVER] User email already exists.')
             return False
         
+
