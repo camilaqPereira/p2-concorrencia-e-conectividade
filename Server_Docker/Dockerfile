@@ -11,7 +11,12 @@ WORKDIR /serverSide
 COPY ../. .
 
 #instalar dependencias do python
-RUN pip install scipy
+RUN pip install networkx
+RUN pip install requests
+RUN pip install flask
+RUN pip install flask_restful
+RUN pip install flask_cors
+
 
 #rodar o servidor na inicialização do container
 CMD ["python", "-m", "serverSide.server"]

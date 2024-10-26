@@ -11,18 +11,20 @@ class FilePathsManagement(Enum):
 
 class Route:
 
-    def __init__(self, match = '', destination = '', sits = 0, id = None):
+    def __init__(self, match = '', destination = '', sits = 0, id = None, company = ''):
         self.match = match
         self.destination = destination
         self.sits = sits
         self.id = id
+        self.company = company
 
     def to_string(self):
-        return {'match': self.match, 'destination': self.destination, 'sits': self.sits, 'id': self.id}
+        return {'match': self.match, 'destination': self.destination, 'sits': self.sits, 'id': self.id, 'company':self.company}
     
     def from_string(self, data):
         self.match = data['match']
         self.destination = data['destination']
         self.sits = data['sits']
         self.id = data['id']
+        self.company = data['company']
 

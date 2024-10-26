@@ -48,6 +48,7 @@ def buy_route(client: ClientSocket):
                     path = utils.Route()
                     path.from_string(route)
                     print(f'\t\tconexao {j}: {path.match} a {path.destination}')
+                    print(f'\t\tcompania: {path.company}')
                     j += 1
 
                 i += 1
@@ -75,6 +76,7 @@ def buy_route(client: ClientSocket):
             for item in ticket.routes:
                 print(f"\tConexão {i}:")  
                 print(f"\t\tDe: {item[0]}\tPara: {item[1]}")
+                print(f"\t\tCompanhia: {item[2]}")
 
                 i+=1
 
@@ -103,6 +105,7 @@ def buy_route(client: ClientSocket):
                         path = utils.Route()
                         path.from_string(route)
                         print(f'\t\tconexao {j}: {path.match} a {path.destination}')
+                        print(f'\t\tcompania: {path.company}')
                         j += 1
 
                     i += 1
@@ -127,6 +130,8 @@ def buy_route(client: ClientSocket):
                     for item in ticket.routes:
                         print(f"\tConexão {i}:")  
                         print(f"\t\tDe: {item[0]}\tPara: {item[1]}")
+                        print(f"\t\tCompanhia: {item[2]}")
+                        
 
                         i+=1
 
@@ -180,6 +185,7 @@ def seek_bougths(client: ClientSocket):
             for item in route:
                 print(f"\tConexão {j}:")  
                 print(f"\t\tDe: {item[0]}\tPara: {item[1]}")
+                print(f'\t\tcompania: {item[2]}')
 
                 j+=1
             i += 1
