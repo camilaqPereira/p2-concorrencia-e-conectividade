@@ -73,7 +73,7 @@ class ClientHandler:
 #            
 ##
 
-    def buy_routes(self, server_data:ServerData, token:str, routes:list[tuple[str,str]]):
+    def buy_routes(self, server_data:ServerData, token:str, routes:list[tuple[str,str,str]]):
         try:
             email = self.__get_email(token)
             future = ClientHandler.pool.submit(server_data.dec_all_routes, routes)
