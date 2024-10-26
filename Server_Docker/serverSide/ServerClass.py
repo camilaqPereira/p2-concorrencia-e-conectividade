@@ -10,6 +10,8 @@ class Server:
     _instance = None
     backlog_clients:list[ClientHandler] = []
     backlog_lock = Lock()
+    id = ConstantsManagement.SERVER_A
+    active_peers = []
 
     def __new__(cls): #padrão singleton
         if not cls._instance:
@@ -53,7 +55,7 @@ class Server:
         with cls.backlog_lock:
             cls.backlog_clients.append(client)
 
-     ##
+    ##
     #   @brief: Método utilizado para a remover um cliente ao backlog de conexões do servidor. Implementa técnicas
     #   para o gerenciamento de condições de corrida
     #   @param: client: cliente a ser removido
@@ -62,6 +64,9 @@ class Server:
     def remove_client(cls, client:ClientHandler):
         with cls.backlog_clients:
             cls.backlog_clients.remove(client)
+
+    
+
 
 
        
