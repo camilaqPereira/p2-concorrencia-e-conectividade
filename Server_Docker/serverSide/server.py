@@ -11,6 +11,9 @@ from flask_cors import  CORS
 #Lista dos ips dos servidores
 serveriplist = []
 
+#muda de valor toda vez que chegar um ip novo na lista
+hasnewserver = False
+
 ##
 #   @brief Função worker excecutada pelas threads da poolthread. Realiza o processamento da requisição do usuário
 #   @param client - objeto do tipo ClientHandler. Usado para identidficar o cliente e processar a requisição
@@ -135,10 +138,10 @@ def home():
 def new_server():
     params = request.get_json()
     serveriplist.append({params['name']:params['ip']})
-
+    hasnewserver = True
     return {'msg':'success'}, 200
 
-@app.route('/getgraph')
+@app.route('/getgraph', methods=['GET'])
 def get_graph():
     return jsonify('''lista de adjacencias passa aqui'''), 200
 
@@ -147,10 +150,20 @@ def main_api():
     app.run(host='0.0.0.0', debug=True, port=5000)
 
 
- 
-
 # Select port #
 port = int(input("Insert port value (0 for default): "))
 port = port or ConstantsManagement.DEFAULT_PORT.value
+
+
+# funcao de inicializacao do servidor que faz o envio dos rq informando um novo servidor
+payload = {'name':'nome da companhia',  'ip':cm.HOST}
+for (name, ip) in serveriplist:
+    rs = requests.post(f'http://{ip}/newserver', data=payload).json()
+
+    #mudar o tratamento depois apenas para testes
+    if rs['msg'] == 'fail':
+        print(f'falha ao se comunicar com o servidor:{name}')
+
+
 
 main_socket(port)
