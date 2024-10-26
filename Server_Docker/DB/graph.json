@@ -1,38 +1,38 @@
 {
     "A": {
         "B": {
-            "weight": 1,
+            "globalWeight": 1,
             "sits": 10,
             "id": "001"
         },
         "C": {
-            "weight": 1,
+            "globalWeight": 1,
             "sits": 10,
             "id": "002"
         }
     },
     "B": {
         "A": {
-            "weight": 1,
+            "globalWeight": 1,
             "sits": 10,
             "id": "003"
         }
     },
     "C": {
         "B": {
-            "weight": 1,
+            "globalWeight": 1,
             "sits": 10,
             "id": "004"
         },
         "D": {
-            "weight": 1,
+            "globalWeight": 1,
             "sits": 10,
             "id": "005"
         }
     },
     "D": {
         "C": {
-            "weight": 1,
+            "globalWeight": 1,
             "sits": 10,
             "id": "006"
         }
